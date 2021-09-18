@@ -1,11 +1,13 @@
 import { observable, computed, action } from "mobx";
 
 import { OrderSide } from "../model";
+import { Profit } from './Profit'
 
 export class PlaceOrderStore {
   @observable activeOrderSide: OrderSide = "buy";
   @observable price: number = 0;
   @observable amount: number = 0;
+  @observable profits: Profit[] = [];
 
   @computed get total(): number {
     return this.price * this.amount;
