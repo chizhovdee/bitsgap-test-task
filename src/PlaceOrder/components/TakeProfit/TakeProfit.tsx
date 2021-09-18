@@ -2,22 +2,24 @@
 
 import React from "react";
 import block from "bem-cn-lite";
-import { AddCircle, Cancel } from "@material-ui/icons";
+import { AddCircle } from "@material-ui/icons";
 
-import { Switch, TextButton, NumberInput } from "components";
+import { Switch, TextButton } from "components";
 
 import { QUOTE_CURRENCY } from "../../constants";
 import { OrderSide } from "../../model";
+import { Profit } from '../../store/Profit'
 import "./TakeProfit.scss";
+import { ProfitItem } from "../ProfitItem/ProfitItem";
 
 type Props = {
   orderSide: OrderSide;
-  // ...
+  profits: Profit[];
 };
 
 const b = block("take-profit");
 
-const TakeProfit = ({ orderSide }: Props) => {
+const TakeProfit = ({ orderSide, profits }: Props) => {
   return (
     <div className={b()}>
       <div className={b("switch")}>
@@ -26,7 +28,7 @@ const TakeProfit = ({ orderSide }: Props) => {
       </div>
       <div className={b("content")}>
         {renderTitles()}
-        {renderInputs()}
+        {renderProfits({ profits })}
         <TextButton className={b("add-button")}>
           <AddCircle className={b("add-icon")} />
           <span>Add profit target 2/5</span>
@@ -43,33 +45,6 @@ const TakeProfit = ({ orderSide }: Props) => {
       </div>
     </div>
   );
-  function renderInputs() {
-    return (
-      <div className={b("inputs")}>
-        <NumberInput
-          value={0}
-          decimalScale={2}
-          InputProps={{ endAdornment: "%" }}
-          variant="underlined"
-        />
-        <NumberInput
-          value={0}
-          decimalScale={2}
-          InputProps={{ endAdornment: QUOTE_CURRENCY }}
-          variant="underlined"
-        />
-        <NumberInput
-          value={0}
-          decimalScale={2}
-          InputProps={{ endAdornment: "%" }}
-          variant="underlined"
-        />
-        <div className={b("cancel-icon")}>
-          <Cancel />
-        </div>
-      </div>
-    );
-  }
 
   function renderTitles() {
     return (
@@ -78,6 +53,12 @@ const TakeProfit = ({ orderSide }: Props) => {
         <span>Target price</span>
         <span>Amount to {orderSide === "buy" ? "sell" : "buy"}</span>
       </div>
+    );
+  }
+
+  function renderProfits({ profits } : { profits: Profit[] }) {
+    return profits.map((profit) =>
+      <ProfitItem key={profit.id} profit={profit} />
     );
   }
 };

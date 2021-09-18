@@ -1,12 +1,19 @@
 import { observable, computed, action } from "mobx";
 
 export class Profit {
+  id: number = Math.random();
   @observable price: number = 0;
   @observable profit: number = 0;
   @observable amount: number = 0;
 
+  constructor(price: number, profit: number, amount: number) {
+    this.price = price;
+    this.profit = profit;
+    this.amount = amount;
+  }
+
   @computed get targetPrice(): number {
-    return this.profit * this.price;
+    return this.profit / 100 * this.price + this.price;
   }
 
   @action
@@ -21,6 +28,6 @@ export class Profit {
 
   @action.bound
   public setTargetPrice(targetPrice: number) {
-    this.profit =  ((targetPrice - this.price) / this.price) * 100;
+    this.profit = ((targetPrice - this.price) / this.price) * 100;
   }
 }
