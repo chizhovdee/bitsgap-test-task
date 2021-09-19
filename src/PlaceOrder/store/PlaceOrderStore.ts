@@ -51,7 +51,7 @@ export class PlaceOrderStore {
 
     const lastProfit = last(this.profits);
     this.profits.push(
-      new Profit(this.price, (lastProfit?.profit ?? 0) + 2, DEFAULT_PROFIT_AMOUNT_PROP)
+      new Profit(this.price, (lastProfit?.profit ?? 0) + 2, lastProfit ? DEFAULT_PROFIT_AMOUNT_PROP : 100)
     );
 
     this.checkAndFixProfitsAmount();
@@ -61,6 +61,11 @@ export class PlaceOrderStore {
   public removeProfit(id: number) {
     const index = this.profits.findIndex((p) => p.id === id);
     if (index >= 0) this.profits.splice(index, 1);
+  }
+
+  @action.bound
+  public removeAllProfits() {
+    this.profits = [];
   }
 
   private checkAndFixProfitsAmount() {

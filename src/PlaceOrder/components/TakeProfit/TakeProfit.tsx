@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-use-before-define: 0 */
 
-import React from "react";
+import React, { useCallback } from "react";
 import { observer } from "mobx-react";
 import block from "bem-cn-lite";
 import { AddCircle } from "@material-ui/icons";
@@ -32,29 +32,44 @@ const TakeProfit = observer(() => {
     profits,
     addProfit,
     removeProfit,
+    removeAllProfits,
     isReachedMaxProfitsCount
   } = useStore();
+
+  const isActiveProfits = profits.length > 0;
+
+  const handleToggle = useCallback(() => {
+    if (isActiveProfits) {
+      removeAllProfits();
+    } else {
+      addProfit();
+    }
+  }, [isActiveProfits, removeAllProfits, addProfit]);
 
   return (
     <div className={b()}>
       <div className={b("switch")}>
         <span>Take profit</span>
-        <Switch checked />
+        <Switch checked={isActiveProfits} onChange={handleToggle} />
       </div>
-      <div className={b("content")}>
-        {renderTitles()}
-        {renderProfits({ profits, removeProfit })}
-        {renderAddProfitButton({ profits, addProfit, isReachedMaxProfitsCount })}
-        <div className={b("projected-profit")}>
-          <span className={b("projected-profit-title")}>Projected profit</span>
-          <span className={b("projected-profit-value")}>
+      {
+        isActiveProfits && (
+          <div className={b("content")}>
+            {renderTitles()}
+            {renderProfits({ profits, removeProfit })}
+            {renderAddProfitButton({ profits, addProfit, isReachedMaxProfitsCount })}
+            <div className={b("projected-profit")}>
+              <span className={b("projected-profit-title")}>Projected profit</span>
+              <span className={b("projected-profit-value")}>
             <span>0</span>
             <span className={b("projected-profit-currency")}>
               {QUOTE_CURRENCY}
             </span>
           </span>
-        </div>
-      </div>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 
