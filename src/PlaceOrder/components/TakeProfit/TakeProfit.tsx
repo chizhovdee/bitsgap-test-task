@@ -1,25 +1,30 @@
 /* eslint @typescript-eslint/no-use-before-define: 0 */
 
 import React from "react";
+import { observer } from "mobx-react";
 import block from "bem-cn-lite";
 import { AddCircle } from "@material-ui/icons";
 
 import { Switch, TextButton } from "components";
 
-import { QUOTE_CURRENCY } from "../../constants";
+import { QUOTE_CURRENCY, MAX_PROFITS_COUNT } from "../../constants";
 import { OrderSide } from "../../model";
-import { Profit } from '../../store/Profit'
+import { Profit } from "../../store/Profit";
 import "./TakeProfit.scss";
 import { ProfitItem } from "../ProfitItem/ProfitItem";
 
 type Props = {
   orderSide: OrderSide;
   profits: Profit[];
+  isReachedMaxProfitsCount: boolean;
+  addProfit(): void;
 };
+
+type AddProfitButton = Pick<Props, "addProfit" | "profits" | "isReachedMaxProfitsCount">
 
 const b = block("take-profit");
 
-const TakeProfit = ({ orderSide, profits }: Props) => {
+const TakeProfit = observer(({ orderSide, profits, addProfit, isReachedMaxProfitsCount }: Props) => {
   return (
     <div className={b()}>
       <div className={b("switch")}>
@@ -29,10 +34,7 @@ const TakeProfit = ({ orderSide, profits }: Props) => {
       <div className={b("content")}>
         {renderTitles()}
         {renderProfits({ profits })}
-        <TextButton className={b("add-button")}>
-          <AddCircle className={b("add-icon")} />
-          <span>Add profit target 2/5</span>
-        </TextButton>
+        {renderAddProfitButton({ profits, addProfit, isReachedMaxProfitsCount })}
         <div className={b("projected-profit")}>
           <span className={b("projected-profit-title")}>Projected profit</span>
           <span className={b("projected-profit-value")}>
@@ -61,6 +63,17 @@ const TakeProfit = ({ orderSide, profits }: Props) => {
       <ProfitItem key={profit.id} profit={profit} />
     );
   }
-};
+
+  function renderAddProfitButton({ profits, addProfit, isReachedMaxProfitsCount }: AddProfitButton) {
+    if (isReachedMaxProfitsCount) return null;
+
+    return (
+      <TextButton className={b("add-button")} onClick={addProfit}>
+        <AddCircle className={b("add-icon")} />
+        <span>Add profit target {profits.length}/{MAX_PROFITS_COUNT}</span>
+      </TextButton>
+    );
+  }
+});
 
 export { TakeProfit };

@@ -6,15 +6,15 @@ import { Cancel } from "@material-ui/icons";
 
 import { NumberInput } from "components";
 import { QUOTE_CURRENCY } from "../../constants";
-import { Profit } from '../../store/Profit'
+import { Profit } from "../../store/Profit";
 
 import "./ProfitItem.scss";
 
 const b = block("profit");
 
 type Props = {
-  profit: Profit
-}
+  profit: Profit;
+};
 
 const ProfitItem = ({ profit } : Props) => {
   console.log(profit);
@@ -43,6 +43,6 @@ const ProfitItem = ({ profit } : Props) => {
       </div>
     </div>
   );
-}
+};
 
 export { ProfitItem };

@@ -1,7 +1,8 @@
 import { observable, computed, action } from "mobx";
 
 import { OrderSide } from "../model";
-import { Profit } from './Profit'
+import { Profit } from "./Profit";
+import { MAX_PROFITS_COUNT } from "../constants";
 
 export class PlaceOrderStore {
   @observable activeOrderSide: OrderSide = "buy";
@@ -11,6 +12,10 @@ export class PlaceOrderStore {
 
   @computed get total(): number {
     return this.price * this.amount;
+  }
+
+  @computed get isReachedMaxProfitsCount(): boolean {
+    return this.profits.length >= MAX_PROFITS_COUNT;
   }
 
   @action.bound
@@ -31,5 +36,12 @@ export class PlaceOrderStore {
   @action.bound
   public setTotal(total: number) {
     this.amount = this.price > 0 ? total / this.price : 0;
+  }
+
+  @action.bound
+  public addProfit() {
+    if (this.isReachedMaxProfitsCount) return;
+
+    this.profits.push(new Profit(100, 2, 20));
   }
 }
