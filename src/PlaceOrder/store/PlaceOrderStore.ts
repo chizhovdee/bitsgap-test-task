@@ -4,7 +4,7 @@ import sumBy from "lodash/sumBy";
 import maxBy from "lodash/maxBy";
 import { OrderSide } from "../model";
 import { Profit } from "./Profit";
-import { MAX_PROFITS_COUNT, DEFAULT_PROFIT_AMOUNT_PROP } from "../constants";
+import { MAX_PROFITS_COUNT, DEFAULT_PROFIT_AMOUNT_PROP, DEFAULT_PROFIT_INCREMENT } from "../constants";
 
 export class PlaceOrderStore {
   @observable activeOrderSide: OrderSide = "buy";
@@ -24,6 +24,10 @@ export class PlaceOrderStore {
     return sumBy(this.profits, "amount");
   }
 
+  @computed get projectedProfit(): number {
+    return sumBy(this.profits, (profit) => profit.calcProjectedProfit(this.activeOrderSide));
+  }
+
   @action.bound
   public setOrderSide(side: OrderSide) {
     this.activeOrderSide = side;
@@ -32,12 +36,13 @@ export class PlaceOrderStore {
   @action.bound
   public setPrice(price: number) {
     this.price = price;
-    this.profits.forEach((profit) => profit.setPrice(this.price));
+    this.profits.forEach((profit) => profit.setOrderPrice(this.price));
   }
 
   @action.bound
   public setAmount(amount: number) {
     this.amount = amount;
+    this.profits.forEach((profit) => profit.setOrderAmount(this.amount));
   }
 
   @action.bound
@@ -50,9 +55,14 @@ export class PlaceOrderStore {
     if (this.isReachedMaxProfitsCount) return;
 
     const lastProfit = last(this.profits);
-    this.profits.push(
-      new Profit(this.price, (lastProfit?.profit ?? 0) + 2, lastProfit ? DEFAULT_PROFIT_AMOUNT_PROP : 100)
-    );
+    const newProfit = new Profit();
+
+    newProfit.setOrderPrice(this.price);
+    newProfit.setOrderAmount(this.amount);
+    newProfit.setProfit((lastProfit?.profit ?? 0) + DEFAULT_PROFIT_INCREMENT);
+    newProfit.setAmount(lastProfit ? DEFAULT_PROFIT_AMOUNT_PROP : 100);
+
+    this.profits.push(newProfit);
 
     this.checkAndFixProfitsAmount();
   }

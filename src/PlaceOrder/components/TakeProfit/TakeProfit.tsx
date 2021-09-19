@@ -33,7 +33,8 @@ const TakeProfit = observer(() => {
     addProfit,
     removeProfit,
     removeAllProfits,
-    isReachedMaxProfitsCount
+    isReachedMaxProfitsCount,
+    projectedProfit
   } = useStore();
 
   const isActiveProfits = profits.length > 0;
@@ -61,7 +62,7 @@ const TakeProfit = observer(() => {
             <div className={b("projected-profit")}>
               <span className={b("projected-profit-title")}>Projected profit</span>
               <span className={b("projected-profit-value")}>
-            <span>0</span>
+            <span>{projectedProfit.toFixed(2)}</span>
             <span className={b("projected-profit-currency")}>
               {QUOTE_CURRENCY}
             </span>

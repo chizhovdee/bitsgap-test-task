@@ -1,24 +1,29 @@
 import { observable, computed, action } from "mobx";
+import { OrderSide } from "../model";
 
 export class Profit {
   id: number = Math.random();
-  @observable price: number = 0;
+  @observable private orderPrice: number = 0;
+  @observable private orderAmount: number = 0;
   @observable profit: number = 0;
   @observable amount: number = 0;
 
-  constructor(price: number, profit: number, amount: number) {
-    this.price = price;
-    this.profit = profit;
-    this.amount = amount;
+  @computed get targetPrice(): number {
+    return this.profit / 100 * this.orderPrice + this.orderPrice;
   }
 
-  @computed get targetPrice(): number {
-    return this.profit / 100 * this.price + this.price;
+  @computed get absoluteAmount () : number {
+    return this.orderAmount * this.amount / 100;
   }
 
   @action
-  public setPrice(price: number) {
-    this.price = price;
+  public setOrderPrice(orderPrice: number) {
+    this.orderPrice = orderPrice;
+  }
+
+  @action
+  public setOrderAmount(orderAmount: number) {
+    this.orderAmount = orderAmount;
   }
 
   @action.bound
@@ -28,11 +33,17 @@ export class Profit {
 
   @action.bound
   public setTargetPrice(targetPrice: number) {
-    this.profit = ((targetPrice - this.price) / this.price) * 100;
+    this.profit = ((targetPrice - this.orderPrice) / this.orderPrice) * 100;
   }
 
   @action.bound
   public setAmount(amount: number) {
     this.amount = amount;
+  }
+
+  public calcProjectedProfit(orderSide: OrderSide) {
+    return orderSide === "buy"
+      ? this.absoluteAmount * (this.targetPrice - this.orderPrice)
+      : this.absoluteAmount * (this.orderPrice - this.targetPrice);
   }
 }
