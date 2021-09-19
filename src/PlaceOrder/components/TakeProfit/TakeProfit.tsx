@@ -13,6 +13,11 @@ import { Profit } from "../../store/Profit";
 import "./TakeProfit.scss";
 import { ProfitItem } from "../ProfitItem/ProfitItem";
 
+type ProfitsProps = {
+  profits: Profit[],
+  removeProfit(id: number): void
+};
+
 type AddProfitButton = {
   profits: Profit[];
   isReachedMaxProfitsCount: boolean;
@@ -26,6 +31,7 @@ const TakeProfit = observer(() => {
     activeOrderSide,
     profits,
     addProfit,
+    removeProfit,
     isReachedMaxProfitsCount
   } = useStore();
 
@@ -37,7 +43,7 @@ const TakeProfit = observer(() => {
       </div>
       <div className={b("content")}>
         {renderTitles()}
-        {renderProfits({ profits })}
+        {renderProfits({ profits, removeProfit })}
         {renderAddProfitButton({ profits, addProfit, isReachedMaxProfitsCount })}
         <div className={b("projected-profit")}>
           <span className={b("projected-profit-title")}>Projected profit</span>
@@ -62,9 +68,9 @@ const TakeProfit = observer(() => {
     );
   }
 
-  function renderProfits({ profits } : { profits: Profit[] }) {
+  function renderProfits({ profits, removeProfit } : ProfitsProps) {
     return profits.map((profit) =>
-      <ProfitItem key={profit.id} profit={profit} />
+      <ProfitItem key={profit.id} profit={profit} removeProfit={removeProfit} />
     );
   }
 

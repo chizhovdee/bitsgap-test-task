@@ -15,9 +15,10 @@ const b = block("profit");
 
 type Props = {
   profit: Profit;
+  removeProfit(id: number) : void
 };
 
-const ProfitItem = observer(({ profit } : Props) => {
+const ProfitItem = observer(({ profit, removeProfit } : Props) => {
   return (
     <div className={b("inputs")}>
       <NumberInput
@@ -41,7 +42,7 @@ const ProfitItem = observer(({ profit } : Props) => {
         variant="underlined"
         onBlur={(value) => profit.setAmount(Number(value))}
       />
-      <div className={b("cancel-icon")}>
+      <div className={b("cancel-icon")} onClick={() => removeProfit(profit.id)}>
         <Cancel />
       </div>
     </div>

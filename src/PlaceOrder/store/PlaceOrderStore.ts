@@ -57,6 +57,12 @@ export class PlaceOrderStore {
     this.checkAndFixProfitsAmount();
   }
 
+  @action.bound
+  public removeProfit(id: number) {
+    const index = this.profits.findIndex((p) => p.id === id);
+    if (index >= 0) this.profits.splice(index, 1);
+  }
+
   private checkAndFixProfitsAmount() {
     if (this.profitsAmountSum <= 100) return;
     const biggestProfit = maxBy(this.profits, "amount") as Profit;
