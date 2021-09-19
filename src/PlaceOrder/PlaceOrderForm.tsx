@@ -18,13 +18,10 @@ export const PlaceOrderForm = observer(() => {
     price,
     total,
     amount,
-    profits,
     setPrice,
     setAmount,
     setTotal,
-    setOrderSide,
-    addProfit,
-    isReachedMaxProfitsCount
+    setOrderSide
   } = useStore();
 
   return (
@@ -63,7 +60,7 @@ export const PlaceOrderForm = observer(() => {
         />
       </div>
       <div className={b("take-profit")}>
-        <TakeProfit orderSide={activeOrderSide} profits={profits} addProfit={addProfit} isReachedMaxProfitsCount={isReachedMaxProfitsCount} />
+        <TakeProfit  />
       </div>
       <div className="submit">
         <Button

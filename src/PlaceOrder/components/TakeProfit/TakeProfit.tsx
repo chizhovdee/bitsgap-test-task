@@ -8,23 +8,27 @@ import { AddCircle } from "@material-ui/icons";
 import { Switch, TextButton } from "components";
 
 import { QUOTE_CURRENCY, MAX_PROFITS_COUNT } from "../../constants";
-import { OrderSide } from "../../model";
+import { useStore } from "../../context";
 import { Profit } from "../../store/Profit";
 import "./TakeProfit.scss";
 import { ProfitItem } from "../ProfitItem/ProfitItem";
 
-type Props = {
-  orderSide: OrderSide;
+type AddProfitButton = {
   profits: Profit[];
   isReachedMaxProfitsCount: boolean;
   addProfit(): void;
 };
 
-type AddProfitButton = Pick<Props, "addProfit" | "profits" | "isReachedMaxProfitsCount">
-
 const b = block("take-profit");
 
-const TakeProfit = observer(({ orderSide, profits, addProfit, isReachedMaxProfitsCount }: Props) => {
+const TakeProfit = observer(() => {
+  const {
+    activeOrderSide,
+    profits,
+    addProfit,
+    isReachedMaxProfitsCount
+  } = useStore();
+
   return (
     <div className={b()}>
       <div className={b("switch")}>
@@ -53,7 +57,7 @@ const TakeProfit = observer(({ orderSide, profits, addProfit, isReachedMaxProfit
       <div className={b("titles")}>
         <span>Profit</span>
         <span>Target price</span>
-        <span>Amount to {orderSide === "buy" ? "sell" : "buy"}</span>
+        <span>Amount to {activeOrderSide === "buy" ? "sell" : "buy"}</span>
       </div>
     );
   }
