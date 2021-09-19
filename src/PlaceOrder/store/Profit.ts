@@ -30,4 +30,9 @@ export class Profit {
   public setTargetPrice(targetPrice: number) {
     this.profit = ((targetPrice - this.price) / this.price) * 100;
   }
+
+  @action.bound
+  public setAmount(amount: number) {
+    this.amount = amount;
+  }
 }

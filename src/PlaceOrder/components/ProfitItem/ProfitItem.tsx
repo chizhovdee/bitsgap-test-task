@@ -17,7 +17,6 @@ type Props = {
 };
 
 const ProfitItem = ({ profit } : Props) => {
-  console.log(profit);
   return (
     <div className={b("inputs")}>
       <NumberInput
