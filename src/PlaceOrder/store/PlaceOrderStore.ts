@@ -32,6 +32,7 @@ export class PlaceOrderStore {
   @action.bound
   public setPrice(price: number) {
     this.price = price;
+    this.profits.forEach((profit) => profit.setPrice(this.price));
   }
 
   @action.bound
@@ -58,9 +59,8 @@ export class PlaceOrderStore {
 
   private checkAndFixProfitsAmount() {
     if (this.profitsAmountSum <= 100) return;
-    console.log("checkAndFixProfitsAmount");
     const biggestProfit = maxBy(this.profits, "amount") as Profit;
     const extraAmount = this.profitsAmountSum - 100;
-    biggestProfit.setAmount(Math.max(0, biggestProfit.amount - extraAmount));
+    biggestProfit.setAmount(biggestProfit.amount - extraAmount);
   }
 }
