@@ -9,6 +9,7 @@ import { useStore } from "./context";
 import { PlaceOrderTypeSwitch } from "./components/PlaceOrderTypeSwitch/PlaceOrderTypeSwitch";
 import { TakeProfit } from "./components/TakeProfit/TakeProfit";
 import "./PlaceOrderForm.scss";
+import { useForm } from "./hooks";
 
 const b = block("place-order-form");
 
@@ -24,8 +25,10 @@ export const PlaceOrderForm = observer(() => {
     setOrderSide
   } = useStore();
 
+  const { submit, errors, clearErrors } = useForm();
+
   return (
-    <form className={b()}>
+    <form className={b()} onSubmit={submit}>
       <div className={b("header")}>
         Binance: {`${BASE_CURRENCY} / ${QUOTE_CURRENCY}`}
       </div>
@@ -60,7 +63,7 @@ export const PlaceOrderForm = observer(() => {
         />
       </div>
       <div className={b("take-profit")}>
-        <TakeProfit  />
+        <TakeProfit errors={errors.profits} clearErrors={clearErrors} />
       </div>
       <div className="submit">
         <Button

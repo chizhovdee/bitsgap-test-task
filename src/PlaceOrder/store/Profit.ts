@@ -33,7 +33,9 @@ export class Profit {
 
   @action.bound
   public setTargetPrice(targetPrice: number) {
-    this.profit = ((targetPrice - this.orderPrice) / this.orderPrice) * 100;
+    this.profit = this.orderPrice > 0
+      ? ((targetPrice - this.orderPrice) / this.orderPrice) * 100
+      : 0;
   }
 
   @action.bound
