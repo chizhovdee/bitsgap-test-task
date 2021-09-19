@@ -1,14 +1,14 @@
 import { observable, computed, action } from "mobx";
-
+import last from "lodash/last";
 import { OrderSide } from "../model";
 import { Profit } from "./Profit";
-import { MAX_PROFITS_COUNT } from "../constants";
+import { MAX_PROFITS_COUNT, DEFAULT_PROFIT_AMOUNT_PROP } from "../constants";
 
 export class PlaceOrderStore {
   @observable activeOrderSide: OrderSide = "buy";
   @observable price: number = 0;
   @observable amount: number = 0;
-  @observable profits: Profit[] = [new Profit(100, 2, 20), new Profit(100, 4, 20)];
+  @observable profits: Profit[] = [];
 
   @computed get total(): number {
     return this.price * this.amount;
@@ -41,7 +41,9 @@ export class PlaceOrderStore {
   @action.bound
   public addProfit() {
     if (this.isReachedMaxProfitsCount) return;
-
-    this.profits.push(new Profit(100, 2, 20));
+    const lastProfit = last(this.profits);
+    this.profits.push(
+      new Profit(this.price, (lastProfit?.profit ?? 0) + 2, DEFAULT_PROFIT_AMOUNT_PROP)
+    );
   }
 }
